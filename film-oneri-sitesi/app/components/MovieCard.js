@@ -1,82 +1,85 @@
+import { useRouter } from 'next/navigation';
+
 const MovieCard = ({ movie }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    console.log('Tıklanan film:', movie); // Debug için log
+    router.push(`/movie/${movie.movieId}`);
+  };
+
   return (
-    <div
-      style={{
-        width: '250px',
-        borderRadius: '15px',
-        overflow: 'hidden',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)', // Gölgeleme
-        marginBottom: '20px',
-        backgroundColor: '#fff',
-        cursor: 'pointer', // Hoverda fareyle etkileşim
-        transition: 'all 0.3s ease-in-out',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'scale(1.05)';
-        e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
-        e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
-      }}
+    <div 
+      className="movie-card" 
+      style={styles.card}
+      onClick={handleClick}
     >
-      <div style={{ position: 'relative', height: '350px', overflow: 'hidden' }}>
+      {movie.poster_url ? (
         <img
-          src={movie.poster_path || "https://via.placeholder.com/250x375?text=Film+Poster"}
+          src={movie.poster_url}
           alt={movie.title}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            transition: 'transform 0.5s ease-in-out',
-          }}
+          style={styles.image}
         />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            left: '10px',
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            color: 'white',
-            padding: '5px 10px',
-            borderRadius: '5px',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-          }}
-        >
-          {movie.vote_average} <span style={{ fontSize: '0.8rem' }}>⭐</span>
-        </div>
-      </div>
-      <div style={{ padding: '15px' }}>
-        <h3
-          style={{
-            fontSize: '1.1rem',
-            fontWeight: '600',
-            color: '#333',
-            marginBottom: '10px',
-            textTransform: 'capitalize', // Başlık stilini düzenledik
-            lineHeight: '1.3',
-          }}
-        >
-          {movie.title}
-        </h3>
-        <p
-          style={{
-            fontSize: '0.85rem',
-            color: '#777',
-            lineHeight: '1.5',
-            marginBottom: '15px',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-          }}
-        >
-          {movie.overview.length > 100 ? `${movie.overview.slice(0, 100)}...` : movie.overview}
-        </p>
-      </div>
+      ) : (
+        <div style={styles.noImage}>No Image</div>
+      )}
+      <h3 style={styles.title}>{movie.title}</h3>
+      <p style={styles.genres}>{movie.genres}</p>
+      <p style={styles.description}>
+        {movie.description.length > 100
+          ? `${movie.description.slice(0, 100)}...`
+          : movie.description}
+      </p>
     </div>
   );
+};
+
+const styles = {
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    padding: '15px',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+    },
+  },
+  image: {
+    width: '100%',
+    aspectRatio: '2/3',
+    objectFit: 'cover',
+    borderRadius: '8px',
+    marginBottom: '10px',
+  },
+  noImage: {
+    width: '100%',
+    height: '300px',
+    backgroundColor: '#ddd',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '8px',
+    marginBottom: '10px',
+  },
+  title: {
+    fontSize: '1.2rem',
+    fontWeight: 'bold',
+    marginBottom: '8px',
+    color: '#2c3e50',
+  },
+  genres: {
+    fontSize: '0.9rem',
+    color: '#7f8c8d',
+    marginBottom: '8px',
+  },
+  description: {
+    fontSize: '0.9rem',
+    color: '#34495e',
+    lineHeight: '1.4',
+  },
 };
 
 export default MovieCard;
